@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Avatar In Canvas</title>
+
+    <script id="vertex-shader" type="x-shader/x-vertex">
+      attribute vec3 vPosition;
+      attribute vec3 vNormal;
+
+      uniform mat4 modelViewMatrix;
+      uniform mat4 projectionMatrix;
+      uniform vec4 color;
+
+      uniform vec4 ambientProduct, diffuseProduct, specularProduct;
+      uniform vec4 lightPosition;
+      uniform float shininess;
+
+      uniform int colorFlag;
+      
+      varying vec4 fcolor;
+
+      varying vec2 fTexCoord;
+      attribute vec2 vTexCoord;
+
+      void main() {
+        vec4 pos4D = vec4(vPosition, 1.0);
+        vec4 nor4D = vec4(vNormal, 0.0);
+
+        if(colorFlag == 1) {
+          //compute lighting in eye coordinates
+          vec3 pos = (modelViewMatrix * pos4D).xyz;
+          // input light has been defined in eye coords in js
+          vec3 light = (modelViewMatrix * lightPosition).xyz;
+          vec3 L = normalize( light - pos );
+
+          // eye coordinates assumes eye at origin
+          vec3 eyePoint = vec3(0.0, 0.0, 0.0);
+          vec3 E = normalize( eyePoint - pos );
+
+          // halfway vector
+          vec3 H = normalize( L + E );
+
+          // Transform vertex normal into eye coordinates
+          vec3 N = normalize( (modelViewMatrix*nor4D).xyz);
+
+          // Compute terms in the illumination equation
+          vec4 ambient = ambientProduct;
+
+          float Kd = max( dot(L, N), 0.0 );
+          vec4 diffuse = Kd*diffuseProduct;
+
+          // play: this is how you might do debugging;
+          //setting colors on condition
+          //if(dot(L, N) < 0.0) diffuse = vec4(1.0, 0.0, 0.0, 1.0);
+
+          float Ks = pow( max(dot(N, H), 0.0), shininess );
+          vec4 specular = Ks * specularProduct;
+
+          if( dot(L, N) < 0.0 ) {
+            specular = vec4(0.0, 0.0, 0.0, 1.0);
+          }
+
+          // play
+          //diffuse = vec4(0.0, 0.0, 0.0, 1.0);
+          //ambient = vec4(0.0, 0.0, 0.0, 1.0);
+          //specular = vec4(0.0, 0.0, 0.0, 1.0);
+
+          //fcolor = color;
+          fcolor = ambient + diffuse + specular;
+          fcolor.a = 1.0;
+          fTexCoord = vTexCoord;
+        }
+        else {
+            fcolor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+
+        gl_PointSize = 10.0;
+       /*gl_Position = projectionMatrix * modelViewMatrix * vPosition;*/
+        gl_Position = projectionMatrix * modelViewMatrix * pos4D;
+      } 
+    </script>
+
+    <script id="fragment-shader" type="x-shader/x-fragment">
+      precision mediump float;
+      varying vec4 fcolor;
+
+      uniform sampler2D texture;
+      varying vec2 fTexCoord;
+
+      uniform int textureFlag;
+
+      void main() {
+        if (textureFlag == 1) 
+          gl_FragColor = fcolor * texture2D( texture, fTexCoord );
+        else
+          gl_FragColor = fcolor;
+      }
+    </script>
+
+    <!--Semantic UI Data-->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
+    <script
+      src="https://code.jquery.com/jquery-3.1.1.min.js"
+      integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js"></script>
+
+    <script type="text/javascript" src="./Common/webgl-utils.js"></script>
+    <script type="text/javascript" src="./Common/InitShaders.js"></script>
+    <script type="text/javascript" src="./Common/MV.js"></script>
+    <script type="text/javascript" src="./Avatar_TexBase64.js"></script>
+    <script type="text/javascript" src="./Avatar_Utility.js"></script>
+    <script type="text/javascript" src="./Avatar.js"></script>
+  </head>
+  
+  <body style = "background-color:grey">
+    <div class = "ui basic center aligned segment" style="font-family:verdana;">    
+      <h1>Avatar in a Canvas!</h1>
+      <p>Click & Drag the canvas to reposition camera!</p>
+
+      <canvas id="gl-canvas" width="512" height="512" style = "border-radius:40px;filter:drop-shadow(0 0 12px black);">
+        Oops ... your browser doesn't support the HTML5 canvas element
+      </canvas>
+      <br/>
+      <strong>Author: </strong>Samuel Athanasenas
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+      <strong>Date: </strong>Apr 21st 2021<br/>
+
+      <input type = "checkbox" oninput="((chk)=>runAnimation = chk.checked)(this)" checked><span> Animation Active</input><br/>
+      <input type = "checkbox" oninput="((chk)=>moveCamera = chk.checked)(this)" checked><span> Rotate Camera</input><br/>
+      <div style = "border:1px outset black;display:inline-block;padding:20px;margin:10px;border-radius:20px;">
+          <h3>Texture Options</h3>
+          <div class = "ui button blue tex" onclick= '(() => {setBrickTexture(); $(".tex").removeClass("blue"); $(this).addClass("blue")})()'>Brick Texture</div>
+          <div class = "ui button tex" onclick = '(() => {setMetalTexture(); $(".tex").removeClass("blue"); $(this).addClass("blue")})()'>Metal Texture</div>
+          <div class = "ui button tex" onclick = '(() => {setGrassTexture(); $(".tex").removeClass("blue"); $(this).addClass("blue")})()'>Grass Texture</div>
+      </div>
+      <br/>
+      <strong>Description: </strong>This program animates an Avatar that walks around the brick ground in a hourglass fashion. The Avatar will slowly rotate in the direction of travel, relative to the center of the platform. The Avatar also has all of its body parts animated (all 4 legs, torso & head). There is a light that rotates in a circle around the main platform that is displayed with a 2D white emissive square. At any time, the animation or camera rotation can be toggled on or off using the respective control buttons. The texture is encoded in Base-64 to make running the program on local machines much easier. <br/>
+      <strong>Resources: </strong>Prof. Angles Codes, StackOverflow, W3-Schools<br/>
+      <br/>
+    </div>
+  </body>
+</html>
