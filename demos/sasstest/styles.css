@@ -1,0 +1,167 @@
+body {
+  background-color: #abcccc;
+  margin: 0;
+  overflow: hidden;
+}
+
+body div.text {
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+  height: 90vh;
+  position: relative;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+body div.text * {
+  -webkit-transition: 1s;
+  transition: 1s;
+}
+
+body div.text *:hover {
+  background-color: yellow;
+  -webkit-transform: scale(2);
+          transform: scale(2);
+  -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black;
+}
+
+div.backward {
+  position: absolute;
+  right: -160px;
+  top: 0;
+}
+
+div.backward * {
+  width: 160px;
+  height: 50px;
+  display: block;
+  margin-bottom: 20px;
+  -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black;
+  -webkit-transform-origin: left;
+          transform-origin: left;
+  -webkit-transform: scaleX(-1);
+          transform: scaleX(-1);
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+}
+
+@-webkit-keyframes elem-move-1 {
+  0% {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+  100% {
+    -webkit-transform: scaleX(-2);
+            transform: scaleX(-2);
+  }
+}
+
+@keyframes elem-move-1 {
+  0% {
+    -webkit-transform: scaleX(-1);
+            transform: scaleX(-1);
+  }
+  100% {
+    -webkit-transform: scaleX(-2);
+            transform: scaleX(-2);
+  }
+}
+
+div.backward *:nth-child(4n+1) {
+  background-color: red;
+  -webkit-animation: elem-move-1 1s infinite 0.5s alternate;
+          animation: elem-move-1 1s infinite 0.5s alternate;
+}
+
+div.backward *:nth-child(4n+2) {
+  background-color: orange;
+  -webkit-animation: elem-move-1 1s infinite 1s alternate;
+          animation: elem-move-1 1s infinite 1s alternate;
+}
+
+div.backward *:nth-child(4n+3) {
+  background-color: blue;
+  -webkit-animation: elem-move-1 1s infinite 1.5s alternate;
+          animation: elem-move-1 1s infinite 1.5s alternate;
+}
+
+div.backward *:nth-child(4n+4) {
+  background-color: lime;
+  -webkit-animation: elem-move-1 1s infinite 2s alternate;
+          animation: elem-move-1 1s infinite 2s alternate;
+}
+
+div.forward {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+div.forward * {
+  width: 160px;
+  height: 50px;
+  display: block;
+  margin-bottom: 20px;
+  -webkit-box-shadow: 0 0 5px black;
+          box-shadow: 0 0 5px black;
+  -webkit-transform-origin: left;
+          transform-origin: left;
+  -webkit-transform: scaleX(1);
+          transform: scaleX(1);
+  display: -ms-grid;
+  display: grid;
+  place-items: center;
+}
+
+@-webkit-keyframes elem-move1 {
+  0% {
+    -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+  }
+  100% {
+    -webkit-transform: scaleX(2);
+            transform: scaleX(2);
+  }
+}
+
+@keyframes elem-move1 {
+  0% {
+    -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+  }
+  100% {
+    -webkit-transform: scaleX(2);
+            transform: scaleX(2);
+  }
+}
+
+div.forward *:nth-child(4n+1) {
+  background-color: red;
+  -webkit-animation: elem-move1 1s infinite 0.5s alternate;
+          animation: elem-move1 1s infinite 0.5s alternate;
+}
+
+div.forward *:nth-child(4n+2) {
+  background-color: orange;
+  -webkit-animation: elem-move1 1s infinite 1s alternate;
+          animation: elem-move1 1s infinite 1s alternate;
+}
+
+div.forward *:nth-child(4n+3) {
+  background-color: blue;
+  -webkit-animation: elem-move1 1s infinite 1.5s alternate;
+          animation: elem-move1 1s infinite 1.5s alternate;
+}
+
+div.forward *:nth-child(4n+4) {
+  background-color: lime;
+  -webkit-animation: elem-move1 1s infinite 2s alternate;
+          animation: elem-move1 1s infinite 2s alternate;
+}
+/*# sourceMappingURL=styles.css.map */

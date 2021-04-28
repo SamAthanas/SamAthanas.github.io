@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <div class = "wrapper">
+        <div class="container">
+            <h1>1</h1>
+        </div>
+    </div>
+
+    <script type = "text/javascript">
+        const elems = document.querySelectorAll(".container > *");
+        let count = elems.length;
+        elems.forEach((elem,index) => {
+            const click = () => {
+                //alert(`Clicked Item #${index}`);
+                //event.srcElement
+
+                const newElem = document.createElement("h1");
+                newElem.innerHTML = ++count;
+                newElem.addEventListener("click",click);
+
+                document.querySelector(".container").appendChild(newElem);
+            }
+
+            elem.addEventListener("click",click);
+        })
+    </script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sam and Gaby</title>
+    <link rel = "stylesheet" href = "./styles.css"/>
+</head>
+<body>
+    <div class = "container">
+        <span></span>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha512-z4OUqw38qNLpn1libAN9BsoDx6nbNFio5lA6CuTp9NlK83b89hgyCVq+N5FdBJptINztxn1Z3SaKSKUS5UP60Q==" crossorigin="anonymous"></script>
+
+    <script type = "text/javascript">
+        const containerSpan = document.querySelector(".container > span");
+        const columnCount = 10;
+
+        for(let i = 0; i < 100;i++) {
+            let elem = document.createElement("div");
+            containerSpan.appendChild(elem);
+        }
+
+        const targetTrans = 200;
+        setInterval( () => {
+            anime({
+                targets: ".container > span > div",
+                translateX: (Math.random() * (targetTrans * 2) ) - targetTrans,
+                translateY: (Math.random() * (targetTrans * 2)) - targetTrans,
+                backgroundColor:`rgb(${Math.random() * 255},${Math.random() * 255},${Math.random() * 255})`,
+                delay: anime.stagger(10,{from: 'center'}),
+                easing: 'easeOutBounce'
+            })
+        },2000);
+
+        document.body.style.background = "radial-gradient(rgb(0, 0, 0),rgb(0, 175, 255));";
+    </script>
+</body>
+</html>
